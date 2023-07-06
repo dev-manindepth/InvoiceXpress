@@ -3,8 +3,11 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
+import connectionToDB from "./config/connectDb.js";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
+import mongoSanitize from 'express-mongo-sanitize'
 
+await connectionToDB();
 const app = express();
 
 if (process.env.NODE_ENV == "development") {
@@ -15,6 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser());
+
+app.use(mongoSanitize());
 
 app.use(morganMiddleware);
 app.get("/api/v1/test", (req, res) => {
