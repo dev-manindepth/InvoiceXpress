@@ -5,8 +5,8 @@ import express from "express";
 import morgan from "morgan";
 import connectionToDB from "./config/connectDb.js";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
-import mongoSanitize from 'express-mongo-sanitize'
-
+import mongoSanitize from "express-mongo-sanitize";
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 await connectionToDB();
 const app = express();
 
@@ -25,7 +25,8 @@ app.use(morganMiddleware);
 app.get("/api/v1/test", (req, res) => {
   return res.json({ message: "hello from test route" });
 });
-
+app.use(notFound);
+app.use(errorHandler);
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(
